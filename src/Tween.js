@@ -142,7 +142,8 @@ TWEEN.Tween = function (object, group) {
 	this._onStopCallback = null;
 	this._group = group || TWEEN;
 	this._id = TWEEN.nextId();
-
+	this._paused = false;
+	this._pauseTime = null;
 };
 
 TWEEN.Tween.prototype = {
@@ -449,6 +450,25 @@ TWEEN.Tween.prototype = {
 
 		return true;
 
+	},
+
+	pause: function () {
+		if (this._paused) return;
+
+		this._paused = true;
+		this._pauseStart = TWEEN.now();
+
+		this._group.remove( this );
+	},
+
+	resume: function () {
+		if (!this._paused) return;
+
+		this._paused = false;
+
+		this._startTime += TWEEN.now() - this._pauseStart;
+
+		this._group.add( this );
 	}
 };
 
